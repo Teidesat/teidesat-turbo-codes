@@ -8,7 +8,7 @@ set(THIS TurboCodesTest)
 project(${THIS})
 
 # Ficheros de la librería
-set(SOURCE)
+set(SOURCE TurboBit_Test.cpp)
 
 # Configuración de los tests
 add_executable(${THIS} ${SOURCE})
