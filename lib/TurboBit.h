@@ -10,10 +10,18 @@
 
 #include <bitset>
 #include <iostream>
+#include <string>
 
 #include "common.h"
 
 namespace ttc {
+
+  /**
+   * Almacena un bit y sus estados asociados.
+   *
+   * @atribute bitset_
+   *    - Set de bits con el bit y sus estados.
+   */
   class TurboBit {
     private:
       char bitset_ = 0;     // Conjunto de bits

@@ -1,55 +1,17 @@
+/**
+ * Prueba de funcionamiento.
+ */
+
+
 #include "lib/TurboBit.h"
+#include "lib/Rsc.h"
 
 int main() {
-  ttc::TurboBit bits = {};
-  char aux = 0;
-
-  std::cout << "Inicio del set: " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  bits.setBit(true);
-  std::cout << "Bit marcado a " << std::bitset<1>(bits.getBit()) << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  ttc::set_bit(aux, 1, true);
-  bits.setStates(aux);
-  std::cout << "States marcados a " << std::bitset<2>(aux) << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  bits.setBit(false);
-  std::cout << "Bit marcado a " << std::bitset<1>(bits.getBit()) << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  ttc::set_bit(aux, 0, true);
-  bits.setStates(aux);
-  std::cout << "States marcados a " << std::bitset<2>(aux) << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  ttc::set_bit(aux, 1, false);
-  bits.setStates(std::bitset<ttc::STATES_SIZE>("00"));
-  std::cout << "States marcados a " << std::bitset<ttc::STATES_SIZE>("00") << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  bits.setBit(true);
-  std::cout << "Bit marcado a " << std::bitset<1>(bits.getBit()) << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  ttc::set_bit(aux, 1, false);
-  bits.setStates(std::bitset<ttc::STATES_SIZE>("11"));
-  std::cout << "States marcados a " << std::bitset<ttc::STATES_SIZE>("11") << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
-
-  ttc::set_bit(aux, 1, false);
-  bits.setStates(std::bitset<ttc::STATES_SIZE>("01"));
-  std::cout << "States marcados a " << std::bitset<ttc::STATES_SIZE>("01") << ": " << bits << std::endl;
-  std::cout << "Bit: " << std::bitset<1>(bits.getBit()) << std::endl;
-  std::cout << "States: " << std::bitset<2>(bits.getStates()) << std::endl << std::endl;
+  std::bitset<ttc::MESSAGE_SIZE> message("01010111001110101010001100111110");
+  std::bitset<ttc::MESSAGE_SIZE> codedBits("01101110010001101101010010011010");
+  ttc::Rsc a;
+  std::array<ttc::TurboBit, ttc::MESSAGE_SIZE> result = a.code(message);
+  for (const ttc::TurboBit& bit: result) {
+    std::cout << bit.getBit();
+  }
 }
