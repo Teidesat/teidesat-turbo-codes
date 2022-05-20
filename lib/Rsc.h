@@ -21,25 +21,21 @@
 
 namespace ttc {
 
-  /**
-   * Codificador convolucional sistemático recursivo. Es un conjunto de dos estados que, mediante un mensaje de entrada y
-   * una serie de operaciones XOR, envía un mensaje de salida que más tarde podrá ser reordenado mediante un
-   * decodificador convolucional sistemático recursivo que también tenga dos estados.
-   *
-   * @atribute states_
-   *      - Conjunto de dos estados que usa el sistema para la codificación del mensaje.
-   */
+  // Codificador convolucional sistemático recursivo.
+  // Es un conjunto de dos estados que, mediante un mensaje de entrada y una serie de operaciones XOR, envía un mensaje
+  // de salida que más tarde podrá ser reordenado mediante un decodificador convolucional sistemático recursivo que
+  // también tenga dos estados.
   class Rsc {
     private:
-      char states_ = 0;     // Conjunto de estados del codificador.
+      StatesSet states_{};     // Conjunto de estados del codificador.
 
     public:
       Rsc();      // Constructor por defecto.
 
-      char& states();                 // Bits getter & setter
-      const char& states() const;     // Bits const getter & setter
+      StatesSet& states();                 // Bits getter & setter
+      const StatesSet& states() const;     // Bits const getter & setter
 
-      std::array<TurboBitset, MESSAGE_SIZE> code(const char* message);      // Codifica el mensaje.
+      TurboBitset code(const BitsSet& message);      // Codifica el mensaje.
 
     private:
       inline void reset();                    // Resetea los estados a 0.

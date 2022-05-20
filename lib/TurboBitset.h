@@ -10,8 +10,6 @@
 
 #include <array>
 #include <bitset>
-#include <iostream>
-#include <string>
 
 #include "common.h"
 
@@ -34,6 +32,12 @@ namespace ttc {
 
       StatesArray& states();                 // States attribute accessor.
       const StatesArray& states() const;     // States const attribute accessor.
+
+      bool get_bit(const uint16_t& pos) const;                // Devuelve el valor del bit en una posición.
+      void set_bit(const uint16_t& pos, const bool& val);     // Modifica el valor del bit en una posición.
+
+      StatesSet get_states(const uint16_t& pos) const;                // Devuelve el valor del estado en una posición.
+      void set_states(const uint16_t& pos, const StatesSet& val);     // Modifica el valor del estado en una posición.
   };
 }
 

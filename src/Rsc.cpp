@@ -12,80 +12,58 @@
 
 namespace ttc {
 
-  /**
-   * Constructor por defecto.
-   */
+  // Constructor por defecto.
+  // Inicializa los estados a 0.
   Rsc::Rsc() = default;
 
-  /**
-   * States accessor.
-   *
-   * @return El estado actual del RSC.
-   */
-  char& Rsc::states() {
+  // States attribute accessor.
+  // Devuelve una referencia al conjunto de estados.
+  StatesSet& Rsc::states() {
     return states_;
   }
 
-  /**
-   * Const states accessor.
-   *
-   * @return El estado actual del RSC.
-   */
-  const char& Rsc::states() const {
+  // States const attribute accessor.
+  // Devuelve una referencia constante al conjunto de estados.
+  const StatesSet& Rsc::states() const {
     return states_;
   }
 
-  /**
-   * Codifica el mensaje pasado como parámetro.
-   *
-   * @param message - Mensaje a codificar.
-   *
-   * @return El mensaje codificado.
-   */
-  std::array<TurboBitset, MESSAGE_SIZE> Rsc::code(const char* message) {
-    std::array<TurboBitset, MESSAGE_SIZE> result;
-    for (size_t i = 0; i < MESSAGE_SIZE / sizeof(char); i++) {
-      for (uint16_t j = 0; j < sizeof(char); j++) {
-        const bool aux = (get_bit(message[i], j) ^ get_xor_states());
-        result[i].setBit(aux ^ get_bit(states(), 0));
-        result[i].setStates(states());
-        update_state(aux);
-      }
+  // Codifica el mensaje pasado como parámetro.
+  // Devolverá un TurboBitset con el mensaje codificado y los estados asociados a cada bit.
+  TurboBitset Rsc::code(const BitsSet& message) {
+    TurboBitset result;
+    for (size_t i = 0; i < MESSAGE_SIZE; i++) {
+      const bool aux = message[i] ^ get_xor_states();
+      result.set_bit(i, (aux ^ states()[0]));
+      update_state(aux);
+      result.set_states(i, states());
     }
     reset();
     return result;
   }
 
-  /**
-   * Resetea a 0 los estados.
-   */
+  // Resetea a 0 el valor de los estados.
   void Rsc::reset() {
-    states() = 0;
+    states().reset();
   }
 
-  /**
-   * Realiza la operación xor sobre los estados.
-   *
-   * @return Un bit con el resultado de la operación.
-   */
+  // Realiza la operación XOR con los estados y devuelve el resultado.
+  // Esta operación se utiliza en el proceso de codificación.
   bool Rsc::get_xor_states() const {
-    bool result = get_bit(states(), 0);
+    bool result = states()[0];
     for (uint8_t i = 1; i < STATES_SIZE; i++) {
-      result ^= get_bit(states(), i);
+      result ^= states()[i];
     }
     return result;
   }
 
-  /**
-   * Actualiza los valores de cada estado.
-   *
-   * @param aux Valor del bit de entrada.
-   */
+  // Actualiza el valor de los estados.
+  // Rueda todos los valores una posición a la derecha e introduce el valor entrante al final.
   void Rsc::update_state(const bool& aux) {
     for (uint8_t i = 0; i < (STATES_SIZE - 1); i++) {
-      set_bit(states(), i, get_bit(states(), i + 1));
+      states()[i] = states()[i + 1];
     }
-    set_bit(states(), STATES_SIZE - 1, aux);
+    states()[STATES_SIZE - 1] = aux;
   }
 
 }

@@ -10,7 +10,6 @@
 
 #include <array>
 #include <bitset>
-#include <cstdint>
 
 namespace ttc {
 
@@ -24,6 +23,9 @@ namespace ttc {
 
   // Almacena un conjunto de bits de tamaño MESSAGE_SIZE.
   typedef std::bitset<MESSAGE_SIZE> BitsSet;
+
+  // Almacena un conjunto de bits de tamaño STATES_SIZE.
+  typedef std::bitset<STATES_SIZE> StatesSet;
 
   // Un array de tamaño STATES_SIZE que almacena un conjunto de estados.
   // Cada estado corresponderá a cada una de las posiciones dentro del array, y cada valor que haya tomado el estado,

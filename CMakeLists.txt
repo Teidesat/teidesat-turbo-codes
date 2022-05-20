@@ -11,8 +11,8 @@ enable_testing()
 add_subdirectory(googletest)
 
 # Ficheros de la librería
-set(HEADERS lib/common.h lib/TurboBitset.h)
-set(SOURCES src/TurboBitset.cpp)
+set(HEADERS lib/common.h lib/TurboBitset.h lib/Rsc.h)
+set(SOURCES src/TurboBitset.cpp src/Rsc.cpp)
 
 # Configuración de la librería
 add_library(${THIS} ${HEADERS} ${SOURCES} src/TurboCoder.cpp lib/TurboCoder.h)

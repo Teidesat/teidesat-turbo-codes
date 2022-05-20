@@ -5,20 +5,45 @@
  * @brief Prueba los métodos de la clase Rsc.
  */
 
-#include <ostream>
-
 #include <gtest/gtest.h>
 
 #include "../lib/Rsc.h"
 
-/**
- * Test para probar el funcionamiento de la clase TurboBitset.
- */
-TEST(Rsc, Functionallity) {
-  char* message(  "01010111001110101010001100111110");
-  std::bitset<ttc::MESSAGE_SIZE> codedBits("01101110010001101101010010011010");
-  std::array<ttc::TurboBitset, ttc::MESSAGE_SIZE> result = ttc::Rsc().code(message);
-  for (uint i = 0; i < ttc::MESSAGE_SIZE; i++) {
-    EXPECT_EQ(result[i].getBit(), codedBits[i]) << "El bit " << i << " no se ha codificado correctamente!!!";
+// Comprobamos que la clase se inicializa correctamente.
+// Los resultados han sido calculados a mano.
+TEST(Rsc, Inicialization) {
+  // Creamos un mensaje de prueba.
+  ttc::BitsSet testBits("01010111001110101010001100111110");
+  // Creamos el resultado que deberíamos obtener.
+  ttc::BitsSet resultBits("01101110010001101101010010011010");
+  // Creamos los estados que deberíamos obtener.
+  std::array<ttc::StatesSet , ttc::MESSAGE_SIZE> resultStates = {
+      ttc::StatesSet("00"), ttc::StatesSet("10"), ttc::StatesSet("01"), ttc::StatesSet("00"),
+      ttc::StatesSet("10"), ttc::StatesSet("01"), ttc::StatesSet("10"), ttc::StatesSet("11"),
+      ttc::StatesSet("11"), ttc::StatesSet("11"), ttc::StatesSet("01"), ttc::StatesSet("10"),
+      ttc::StatesSet("11"), ttc::StatesSet("11"), ttc::StatesSet("01"), ttc::StatesSet("00"),
+      ttc::StatesSet("00"), ttc::StatesSet("10"), ttc::StatesSet("11"), ttc::StatesSet("11"),
+      ttc::StatesSet("11"), ttc::StatesSet("11"), ttc::StatesSet("01"), ttc::StatesSet("10"),
+      ttc::StatesSet("01"), ttc::StatesSet("00"), ttc::StatesSet("10"), ttc::StatesSet("11"),
+      ttc::StatesSet("11"), ttc::StatesSet("01"), ttc::StatesSet("00"), ttc::StatesSet("00")
+  };
+
+  /**
+   * Aunque solo estemos poniendo 32 bits y estados, ya que es lo que hemos calculado a mano, el test funciona con los
+   * MESSAGE_SIZE bits y estados.
+   * Gracias a que el resto del mensaje se establece a 0 por defecto, hace que los bits faltantes serán todos 0, y que
+   * por lo tanto, el resto de estados también se quede a 0. Gracias a ello podemos dejar que se establezcan a 0 por
+   * defecto y realizar las comprobaciones.
+   */
+
+  // Codificamos el mensaje.
+  ttc::TurboBitset codedBits = ttc::Rsc().code(testBits);
+
+  // Comprobamos los resultados.
+  for (uint16_t i = 0; i < ttc::MESSAGE_SIZE; i++) {
+    EXPECT_EQ(codedBits.get_bit(i), resultBits[i])
+    << "El bit " << i << " no se ha codificado correctamente!!!";
+    EXPECT_EQ(codedBits.get_states(i), resultStates[i])
+    << "El estado " << i << " no se ha codificado correctamente!!!";
   }
 }
