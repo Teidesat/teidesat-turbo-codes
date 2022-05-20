@@ -1,7 +1,7 @@
 /**
  * @author Hugo Fernández Solís
  * @date 17/03/2022
- * @file common.h
+ * @file TurboBitset.cpp
  * @brief Implementa una clase para representar un bit con sus estados asociados.
  */
 

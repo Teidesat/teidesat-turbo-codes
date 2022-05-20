@@ -1,7 +1,7 @@
 /**
  * @author Hugo Fernández Solís
  * @date 24/04/2022
- * @file TurboBitset_Test.cpp
+ * @file CodedBits_Test.cpp
  * @brief Prueba los métodos de la clase TurboBitset.
  */
 
