@@ -5,80 +5,74 @@
  * @brief Prueba los métodos de la clase TurboBits.
  */
 
+#include <random>
 #include <ostream>
-
 #include <gtest/gtest.h>
 
-#include "../lib/TurboBit.h"
+#include "common.h"
+#include "TurboBitset.h"
 
-/**
- * Test para probar el funcionamiento de la clase TurboBit.
- */
-TEST(TurboBit, Functionallity) {
+///////////////////////////////////////////////////////////////////////////////
+//      TESTS PARA COMPROBAR EL FUNCIONAMIENTO DE LA CLASE TURBOBITSET       //
+///////////////////////////////////////////////////////////////////////////////
 
-  /*** Creamos un TurboBit ***/
-  ttc::TurboBit bits = {};
-  char aux = 0;
+// Comprobamos que la clase se inicializa correctamente.
+TEST(TurboBitset, Inicialization) {
+  // TurboBitset de prueba.
+  ttc::TurboBitset bits;
 
-  /*** Comprobamos que se han inicializado correctamente ***/
-  EXPECT_EQ(bits.getBit(), 0) << "El bit no se inicializa a 0 por defecto!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se inicializan a 0 por defecto!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0000")) << "El set no se ha inicializado correctamente!!!";
+  // Realizamos una segunda comprobación exhaustiva de los bits.
+  for (uint16_t i = 0; i < ttc::MESSAGE_SIZE; i++) {
+    EXPECT_EQ(bits.bits()[i], 0)
+    << "El bit " << i << " se ha inicializado a " << bits.bits()[0] << "en vez de a 0!!!";
+  }
 
-  /*** Probamos a modificar los valores del bit ***/
-  // Establecemos el bit a 1.
-  bits.setBit(1);
-  EXPECT_EQ(bits.getBit(), 1) << "El bit no se ha puesto a 1!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Se han modificado los estados cuando no debían!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0100")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos el bit a 0.
-  bits.setBit(0);
-  EXPECT_EQ(bits.getBit(), 0) << "El bit no se ha puesto a 0!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Se han modificado los estados cuando no debían!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0000")) << "El set no se ha modificado correctamente!!!";
+  // Realizamos una segunda comprobación exhaustiva de los estados.
+  for (uint8_t i = 0; i < ttc::STATES_SIZE; i++) {
+    for (uint16_t j = 0; j < ttc::MESSAGE_SIZE; j++) {
+      EXPECT_EQ(bits.states()[i][j], false)
+      << "El estado " << i << " del bit " << j << " se ha inicializado a " << bits.states()[i][j] << "en vez de a 0!!!";
+    }
+  }
+}
 
-  /*** Probamos a modificar los estados ***/
-  // Establecemos los estados a 01.
-  ttc::set_bit(aux, 0, 1);
-  bits.setStates(aux);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 01!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0001")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos los estados a 11.
-  ttc::set_bit(aux, 1, 1);
-  bits.setStates(aux);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 10!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0011")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos los estados a 10.
-  ttc::set_bit(aux, 0, 0);
-  bits.setStates(aux);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 11!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0010")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos los estados a 00.
-  ttc::set_bit(aux, 1, 0);
-  bits.setStates(aux);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 00!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0000")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos los estados a 01.
-  bits.setStates("01");
-  ttc::set_bit(aux, 0, 1);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 00!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0001")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos los estados a 11.
-  bits.setStates("11");
-  ttc::set_bit(aux, 1, 1);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 00!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0011")) << "El set no se ha modificado correctamente!!!";
-  // Establecemos los estados a 00.
-  bits.setStates(std::bitset<ttc::STATES_SIZE>("00"));
-  ttc::set_bit(aux, 0, 0);
-  ttc::set_bit(aux, 1, 0);
-  EXPECT_EQ(bits.getBit(), 0) << "Se ha modificado el bit cuando no debía!!!";
-  EXPECT_EQ(bits.getStates(), aux) << "Los estados no se han puesto a 00!!!";
-  EXPECT_TRUE(bits == std::bitset<4>("0000")) << "El set no se ha modificado correctamente!!!";
+// Comprobamos que se puede acceder a los atributos de la clase y modificarlos.
+TEST(TurboBitset, Modification) {
+  // TurboBitset de prueba.
+  ttc::TurboBitset bits;
+
+  // Primero modificaremos una seria de bits y estados seleccionados aleatoriamente.
+  // Para ello necesitamos un generador de números aleatorios.
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_int_distribution<std::mt19937::result_type> dist(0,ttc::MESSAGE_SIZE-1);
+  std::vector<uint16_t> positions;
+  // Vamos a modificar la mitad de los bits.
+  while (positions.size() < ttc::MESSAGE_SIZE / 2) {
+    const uint16_t pos = dist(rng);
+    if (std::find(positions.begin(), positions.end(), pos) == positions.end()) {
+      positions.push_back(pos);
+    }
+  }
+
+  // Modificamos los valores de los bits y los estados seleccionados aleatoriamente.
+  for (const uint16_t& pos : positions) {
+    bits.bits()[pos] = true;
+    for (ttc::BitsSet& states : bits.states()) {
+      states[pos] = true;
+    }
+  }
+
+  // Comprobamos que los valores se han modificado correctamente.
+  for (uint16_t i = 0; i < ttc::MESSAGE_SIZE; i++) {
+    // Calculamos el valor que deberá tomar el bit según su posición esté entre las modificadas o no.
+    const bool value = std::find(positions.begin(), positions.end(), i) != positions.end();
+    // Comprobamos los valores de los bits y los estados.
+    EXPECT_EQ(bits.bits()[i], value)
+    << "El bit " << i << " no se ha modificado a correctamente!!!";
+    for (ttc::BitsSet& states: bits.states()) {
+      EXPECT_EQ(states[i], value)
+      << "El estado " << i << " no se ha modificado correctamente!!!";
+    }
+  }
 }

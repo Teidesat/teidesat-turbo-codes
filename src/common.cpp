@@ -22,6 +22,18 @@ namespace ttc {
   }
 
   /**
+   * Devuelve el valor del bit.
+   *
+   * @param bitset Conjunto de bits.
+   * @param pos Posición del bit a obtener.
+   *
+   * @return El valor leído.
+   */
+  bool get_bit(const char* bitset, const uint8_t& pos) {
+    return (bitset[pos/4] >> pos%4) & 1U;
+  }
+
+  /**
    * Establece el valor del bit.
    *
    * @param bitset Conjunto de bits.

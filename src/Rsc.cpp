@@ -42,13 +42,15 @@ namespace ttc {
    *
    * @return El mensaje codificado.
    */
-  std::array<TurboBit, MESSAGE_SIZE> Rsc::code(const std::bitset<MESSAGE_SIZE>& message) {
-    std::array<TurboBit, MESSAGE_SIZE> result;
-    for (size_t i = 0; i < MESSAGE_SIZE; i++) {
-      const bool aux = (message[i] ^ get_xor_states());
-      result[i].setBit(aux ^ get_bit(states(), 0));
-      result[i].setStates(states());
-      update_state(aux);
+  std::array<TurboBitset, MESSAGE_SIZE> Rsc::code(const char* message) {
+    std::array<TurboBitset, MESSAGE_SIZE> result;
+    for (size_t i = 0; i < MESSAGE_SIZE / sizeof(char); i++) {
+      for (uint16_t j = 0; j < sizeof(char); j++) {
+        const bool aux = (get_bit(message[i], j) ^ get_xor_states());
+        result[i].setBit(aux ^ get_bit(states(), 0));
+        result[i].setStates(states());
+        update_state(aux);
+      }
     }
     reset();
     return result;

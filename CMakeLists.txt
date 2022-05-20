@@ -11,11 +11,11 @@ enable_testing()
 add_subdirectory(googletest)
 
 # Ficheros de la librería
-set(HEADERS lib/common.h lib/TurboBit.h lib/Rsc.h)
-set(SOURCES src/common.cpp src/TurboBit.cpp src/Rsc.cpp)
+set(HEADERS lib/common.h lib/TurboBitset.h)
+set(SOURCES src/TurboBitset.cpp)
 
 # Configuración de la librería
-add_library(${THIS} ${HEADERS} ${SOURCES})
+add_library(${THIS} ${HEADERS} ${SOURCES} src/TurboCoder.cpp lib/TurboCoder.h)
 add_executable(${THIS}_EXEC main.cpp ${HEADERS} ${SOURCES})
 target_include_directories(${THIS} PUBLIC lib)
 target_include_directories(${THIS} PUBLIC src)

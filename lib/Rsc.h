@@ -16,7 +16,7 @@
 #include <bitset>
 
 #include "common.h"
-#include "TurboBit.h"
+#include "TurboBitset.h"
 
 
 namespace ttc {
@@ -39,7 +39,7 @@ namespace ttc {
       char& states();                 // Bits getter & setter
       const char& states() const;     // Bits const getter & setter
 
-      std::array<TurboBit, MESSAGE_SIZE> code(const std::bitset<MESSAGE_SIZE>& message);      // Codifica el mensaje.
+      std::array<TurboBitset, MESSAGE_SIZE> code(const char* message);      // Codifica el mensaje.
 
     private:
       inline void reset();                    // Resetea los estados a 0.
