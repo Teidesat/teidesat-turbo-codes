@@ -37,8 +37,7 @@ namespace ttc {
 
       CodedMessage code(const BitsSet& message);     // Codifica el mensaje enviado.
 
-    private:
-      BitsSet interleave(const BitsSet& message) const;     // Reordena el mensaje.
+      static BitsSet interleave(const BitsSet& message) ;     // Reordena el mensaje.
   };
 
 }
