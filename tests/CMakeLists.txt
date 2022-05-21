@@ -8,7 +8,7 @@ set(THIS TurboCodesTest)
 project(${THIS})
 
 # Ficheros de la librería
-set(SOURCE TurboBitset_Test.cpp Rsc_Test.cpp TurboCoder_Test.cpp)
+set(SOURCE TurboBitset_Test.cpp Rsc_Test.cpp TurboCoder_Test.cpp TurboDecoder_Test.cpp)
 
 # Configuración de los tests
 add_executable(${THIS} ${SOURCE})

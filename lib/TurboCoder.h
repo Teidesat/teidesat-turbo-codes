@@ -1,7 +1,7 @@
 /**
  * @author Hugo Fernández Solís
  * @date 17/03/2022
- * @file RSC.h
+ * @file TurboCoder.h
  * @brief Define un turbo codificador. Representa un sistema de corrección de errores que recibe un mensaje y lo
  * codifica para evitar que se pierda información.
  */
