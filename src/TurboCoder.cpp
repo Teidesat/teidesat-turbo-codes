@@ -24,7 +24,13 @@ namespace ttc {
     return result;
   }
 
-  BitsSet TurboCoder::interleave(const BitsSet& message) {
-    return {};
+  // Reordena los bits del mensaje.
+  // Esto se utiliza para codificar el mensaje de una forma diferente y así poder hacer una mejor corrección de errores.
+  BitsSet TurboCoder::interleave(const BitsSet& message) const {
+    BitsSet result;
+    for(uint16_t i = 0; i < MESSAGE_SIZE; i++) {
+      result[(3 * i) % MESSAGE_SIZE] = message[i];
+    }
+    return result;
   }
 }
