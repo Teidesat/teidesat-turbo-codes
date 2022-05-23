@@ -8,6 +8,8 @@
 
 #include "../lib/TurboDecoder.h"
 
+#include <iostream>
+
 namespace ttc {
 
   // Constructor por defecto.
@@ -16,11 +18,31 @@ namespace ttc {
   // Decodifica el mensaje pasado.
   // Primero separa el mensaje original de los códigos. Luego aplicará el algoritmo viterbi sobre los códigos para luego
   // reordenar el último código. Por último comprobará que los tres tengan el mismo resultado.
-  BitsSet TurboDecoder::run(const CodedMessage& codedMessage) {
+  CodedMessage TurboDecoder::run(const CodedMessage& codedMessage) {
     BitsSet message = codedMessage.message;
     TurboBitset code1 = correct(codedMessage.code1);
     TurboBitset code2 = correct(codedMessage.code2);
-    return message;
+    CodedMessage result;
+    result.message = message;
+    result.code1 = code1;
+    result.code2 = code2;
+    return result;
+  }
+
+  // Runs the soft decoder.
+  CodedMessage TurboDecoder::runSoft(const CodedMessage& codedMessage) {
+    BitsSet message = codedMessage.message;
+    TurboBitset code1 = codedMessage.code1;
+    TurboBitset code2 = codedMessage.code2;
+    for (uint16_t i = 0; i < MESSAGE_SIZE; i++) {
+      evaluate_bit(i, code1);
+      evaluate_bit(i, code2);
+    }
+    CodedMessage result;
+    result.message = message;
+    result.code1 = code1;
+    result.code2 = code2;
+    return result;
   }
 
   // Decodifica el TurboBitset pasado.
@@ -37,24 +59,25 @@ namespace ttc {
       return messageOne;
     }
   }
-
-  // Corrige los errores del mensaje.
+        // Corrige los errores del mensaje.
   uint TurboDecoder::viterbi(const bool& value, TurboBitset& message, const uint& error, const uint16_t& pos) {
     if (pos >= MESSAGE_SIZE) {
-      return error;
-    }
-    uint calculatedError = correct_message(value, message, pos);
-    TurboBitset messageCero = message;
-    TurboBitset messageOne = message;
-    const uint errorCero = viterbi(0, messageCero, calculatedError, pos + 1);
-    const uint errorOne = viterbi(1, messageOne, calculatedError, pos + 1);
-    if (errorCero < errorOne) {
-      message = messageCero;
-      return error + errorCero;
+      return 0;
     }
     else {
-      message = messageOne;
-      return error + errorOne;
+      total_count++;
+      uint calculatedError = correct_message(value, message, pos);
+      TurboBitset messageCero = message;
+      TurboBitset messageOne = message;
+      const uint errorCero = viterbi(0, messageCero, calculatedError, pos + 1);
+      const uint errorOne = viterbi(1, messageOne, calculatedError, pos + 1);
+      if (errorCero < errorOne) {
+        message = messageCero;
+        return error + errorCero;
+      } else {
+        message = messageOne;
+        return error + errorOne;
+      }
     }
   }
 
@@ -88,10 +111,46 @@ namespace ttc {
     return mustStates;
   }
 
+  // Evalúa el bit para el soft decoder.
+  void TurboDecoder::evaluate_bit(const uint16_t& pos, TurboBitset& message) {
+    StatesSet prevStates(0);
+    if (pos != 0) {
+      prevStates = message.get_states(pos - 1);
+    }
+    StatesSet cero = calculate_states(0, prevStates);
+    StatesSet one = calculate_states(1, prevStates);
+    uint8_t errorCero = 0;
+    uint8_t errorOne = 0;
+    if (message.get_bit(pos) != 0) {
+      errorCero++;
+    }
+    for (uint8_t i = 0; i < STATES_SIZE; i++) {
+      if (message.get_states(pos)[i] != cero[i]) {
+        errorCero++;
+      }
+    }
+    if (message.get_bit(pos) != 1) {
+      errorOne++;
+    }
+    for (uint8_t i = 0; i < STATES_SIZE; i++) {
+      if (message.get_states(pos)[i] != one[i]) {
+        errorOne++;
+      }
+    }
+    if (errorCero < errorOne) {
+      message.set_bit(pos, 0);
+      message.set_states(pos, cero);
+    }
+    else {
+      message.set_bit(pos, 1);
+      message.set_states(pos, one);
+    };
+  }
+
   // Recibe un mensaje y lo reordena.
   BitsSet TurboDecoder::deinterleave(const BitsSet& message) {
     BitsSet result(0);
-    for(uint16_t i = 0; i < MESSAGE_SIZE; i++) {
+    for (uint16_t i = 0; i < MESSAGE_SIZE; i++) {
       result[i] = message[((3 * i) + 1) % MESSAGE_SIZE];
     }
     return result;

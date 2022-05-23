@@ -31,17 +31,20 @@ namespace ttc {
       Rsc rsc_;     // Codificador sistemático recursivo.
 
     public:
+      uint total_count = 0;
       TurboDecoder();     // Constructor por defecto.
 
-      BitsSet run(const CodedMessage& codedMessage);      // Decodifica el mensaje pasado.
-
-      static BitsSet deinterleave(const BitsSet& message);     // Reordena el mensaje.
+      CodedMessage run(const CodedMessage& codedMessage);      // Decodifica el mensaje pasado.
+      CodedMessage runSoft(const CodedMessage& codedMessage);      // Decodifica el mensaje pasado.
 
     private:
       TurboBitset correct(const TurboBitset& message);
       uint viterbi(const bool& value, TurboBitset& message, const uint& error, const uint16_t& pos);
       uint correct_message(const bool& value, TurboBitset& message, const uint16_t& pos);
       StatesSet calculate_states(const bool& value, const StatesSet& prevStates);
+      void evaluate_bit(const uint16_t& pos, TurboBitset& message);
+
+      BitsSet deinterleave(const BitsSet& message);     // Reordena el mensaje.
   };
 
 }

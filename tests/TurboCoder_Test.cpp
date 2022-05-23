@@ -45,12 +45,4 @@ TEST(TurboCoder, Inicialization) {
     EXPECT_EQ(codedBits.code1.get_states(i), resultStates[i])
     << "El estado " << i << "del code1,  no se ha codificado correctamente!!!";
   }
-
-  // Vamos a comprobar que el interleaver funciona correctamente.
-  const ttc::BitsSet prueba = ttc::BitsSet(0).flip();
-  const ttc::BitsSet result = ttc::TurboCoder::interleave(prueba);
-  for (uint16_t i = 0; i < ttc::MESSAGE_SIZE; i++) {
-    EXPECT_EQ(prueba[i], 1)
-    << "La posición " << i << " no se adjunta en el interleaver!!!";
-  }
 }

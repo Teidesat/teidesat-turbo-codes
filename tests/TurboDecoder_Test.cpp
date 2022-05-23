@@ -18,33 +18,15 @@
 
 // Comprobamos que la clase se inicializa correctamente.
 // Los resultados han sido calculados a mano.
-TEST(TurboDeoder, Inicialization) {
+TEST(TurboDecoder, Inicialization) {
   ttc::TurboDecoder decoder;
-  ttc::BitsSet orig;
+  // Creamos un mensaje de prueba.
+  const ttc::BitsSet testBits("01010111001110101010001100111110");
 
-  // Primero modificaremos una seria de bits y estados seleccionados aleatoriamente.
-  // Para ello necesitamos un generador de números aleatorios.
-  std::random_device dev;
-  std::mt19937 rng(dev());
-  std::uniform_int_distribution<std::mt19937::result_type> dist(0, ttc::MESSAGE_SIZE - 1);
-  std::vector<uint16_t> positions;
-  // Vamos a modificar la mitad de los bits.
-  while (positions.size() < ttc::MESSAGE_SIZE / 2) {
-    const uint16_t pos = dist(rng);
-    if (std::find(positions.begin(), positions.end(), pos) == positions.end()) {
-      positions.push_back(pos);
-    }
-  }
-  // Modificamos los valores de los bits y los estados seleccionados aleatoriamente.
-  for (const uint16_t& pos: positions) {
-    orig[pos] = true;
-  }
+  // Codificamos el mensaje.
+  ttc::CodedMessage codedBits = ttc::TurboCoder().code(testBits);
+  EXPECT_EQ(codedBits.message, decoder.runSoft(codedBits).message)
+  << "No se ha corregido el mensaje correctamente!!!";
 
-  // Probamos con el deinterleaver.
-  ttc::BitsSet modif = ttc::TurboDecoder::deinterleave(ttc::TurboCoder::interleave(orig));
-  for (uint16_t i = 0; i < ttc::MESSAGE_SIZE; i++) {
-    EXPECT_EQ(orig[i], modif[i])
-    << "El bit en la posición " << i << " no se ha reordenado correctamente!!!";
-  }
-
+  std::cout << "Total count: " << decoder.total_count << std::endl;
 }
