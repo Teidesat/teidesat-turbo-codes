@@ -8,7 +8,6 @@
 
 #include "../lib/TurboDecoder.h"
 
-#include <iostream>
 
 namespace ttc {
 
@@ -24,13 +23,13 @@ namespace ttc {
     TurboBitset code2 = correct(codedMessage.code2);
     CodedMessage result;
     result.message = message;
-    result.code1 = code1;
-    result.code2 = code2;
+    result.code1.bits() = rsc_.decode(code1);
+    result.code2.bits() = deinterleave(rsc_.decode(code2));
     return result;
   }
 
   // Runs the soft decoder.
-  CodedMessage TurboDecoder::runSoft(const CodedMessage& codedMessage) {
+  CodedMessage TurboDecoder::run_soft(const CodedMessage& codedMessage) {
     BitsSet message = codedMessage.message;
     TurboBitset code1 = codedMessage.code1;
     TurboBitset code2 = codedMessage.code2;
@@ -40,8 +39,8 @@ namespace ttc {
     }
     CodedMessage result;
     result.message = message;
-    result.code1 = code1;
-    result.code2 = code2;
+    result.code1.bits() = rsc_.decode(code1);
+    result.code2.bits() = deinterleave(rsc_.decode(code2));
     return result;
   }
 
@@ -65,7 +64,7 @@ namespace ttc {
       return 0;
     }
     else {
-      total_count++;
+      totalCount++;
       uint calculatedError = correct_message(value, message, pos);
       TurboBitset messageCero = message;
       TurboBitset messageOne = message;

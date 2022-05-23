@@ -42,6 +42,26 @@ namespace ttc {
     return result;
   }
 
+  // Decodifica el mensaje pasado como parámetro.
+  BitsSet Rsc::decode(const TurboBitset& message) {
+    BitsSet result;
+    for (size_t i = 0; i < MESSAGE_SIZE; i++) {
+      const bool xorStates = get_xor_states();
+      const bool auxCero = xorStates;
+      const bool outCero = auxCero ^ states()[0];
+      if (message.get_bit(i) == outCero && message.get_states(i) == get_states(auxCero))  {
+        result[i] = 0;
+        update_state(0);
+      }
+      else {
+        result[i] = 1;
+        update_state(1);
+      }
+    }
+    reset();
+    return result;
+  }
+
   // Resetea a 0 el valor de los estados.
   void Rsc::reset() {
     states().reset();
@@ -64,6 +84,15 @@ namespace ttc {
       states()[i] = states()[i + 1];
     }
     states()[STATES_SIZE - 1] = aux;
+  }
+
+  StatesSet Rsc::get_states(const bool& aux) {
+    StatesSet result = states();
+    for (uint8_t i = 0; i < (STATES_SIZE - 1); i++) {
+      result[i] = result[i + 1];
+    }
+    result[STATES_SIZE - 1] = aux;
+    return result;
   }
 
 }

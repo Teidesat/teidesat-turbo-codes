@@ -36,10 +36,12 @@ namespace ttc {
       const StatesSet& states() const;     // Bits const getter & setter
 
       TurboBitset code(const BitsSet& message);      // Codifica el mensaje.
+      BitsSet decode(const TurboBitset& message);      // Codifica el mensaje.
 
     private:
       inline void reset();                    // Resetea los estados a 0.
       inline bool get_xor_states() const;     // Realiza la operación XOR sobre los estados.
+      StatesSet get_states(const bool &aux);       // Actualiza los valores de cada estado.
       void update_state(const bool &aux);     // Actualiza los valores de cada estado.
   };
 

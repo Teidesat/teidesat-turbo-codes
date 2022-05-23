@@ -31,11 +31,11 @@ namespace ttc {
       Rsc rsc_;     // Codificador sistemático recursivo.
 
     public:
-      uint total_count = 0;
+      uint totalCount = 0;
       TurboDecoder();     // Constructor por defecto.
 
       CodedMessage run(const CodedMessage& codedMessage);      // Decodifica el mensaje pasado.
-      CodedMessage runSoft(const CodedMessage& codedMessage);      // Decodifica el mensaje pasado.
+      CodedMessage run_soft(const CodedMessage& codedMessage);      // Decodifica el mensaje pasado.
 
     private:
       TurboBitset correct(const TurboBitset& message);

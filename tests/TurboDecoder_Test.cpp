@@ -25,8 +25,8 @@ TEST(TurboDecoder, Inicialization) {
 
   // Codificamos el mensaje.
   ttc::CodedMessage codedBits = ttc::TurboCoder().code(testBits);
-  EXPECT_EQ(codedBits.message, decoder.runSoft(codedBits).message)
+  EXPECT_EQ(codedBits.message, decoder.run_soft(codedBits).code1.bits())
   << "No se ha corregido el mensaje correctamente!!!";
 
-  std::cout << "Total count: " << decoder.total_count << std::endl;
+  std::cout << "Total count: " << decoder.totalCount << std::endl;
 }
